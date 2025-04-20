@@ -2,85 +2,53 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>简易论坛</title>
+  <title>登录注册</title>
   <style>
-    body {
-      font-family: "Helvetica", sans-serif;
-      background-color: #f0f2f5;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      width: 90%;
-      max-width: 700px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      resize: none;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .post {
-      background: #f9f9f9;
-      border-left: 5px solid #4CAF50;
-      padding: 12px;
-      margin-top: 15px;
-      border-radius: 8px;
-    }
-    .comment-btn {
-      background-color: #2196F3;
-      margin-top: 8px;
-      font-size: 14px;
-    }
+    body { font-family: Arial; padding: 30px; background: #f5f5f5; }
+    .form-box { background: white; padding: 20px; max-width: 400px; margin: auto; border-radius: 10px; }
+    input { width: 100%; padding: 10px; margin-top: 10px; }
+    button { width: 100%; padding: 10px; margin-top: 15px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>简易论坛</h1>
-    <textarea id="postContent" placeholder="说点什么吧..."></textarea>
-    <button onclick="addPost()">发布</button>
+  <div class="form-box">
+    <h2>注册</h2>
+    <input type="text" id="registerUsername" placeholder="用户名">
+    <input type="password" id="registerPassword" placeholder="密码">
+    <button onclick="register()">注册</button>
 
-    <div id="postList"></div>
+    <h2>登录</h2>
+    <input type="text" id="loginUsername" placeholder="用户名">
+    <input type="password" id="loginPassword" placeholder="密码">
+    <button onclick="login()">登录</button>
+    <p id="message"></p>
   </div>
 
   <script>
-    function addPost() {
-      const content = document.getElementById("postContent").value.trim();
-      if (content === "") {
-        alert("内容不能为空！");
-        return;
-      }
+    async function register() {
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('registerUsername').value,
+          password: document.getElementById('registerPassword').value
+        })
+      });
+      const msg = await res.text();
+      document.getElementById('message').textContent = msg;
+    }
 
-      const post = document.createElement("div");
-      post.className = "post";
-      post.innerHTML = `
-        <p>${content}</p>
-        <button class="comment-btn">评论</button>
-      `;
-
-      document.getElementById("postList").prepend(post);
-      document.getElementById("postContent").value = "";
+    async function login() {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('loginUsername').value,
+          password: document.getElementById('loginPassword').value
+        })
+      });
+      const msg = await res.text();
+      document.getElementById('message').textContent = msg;
     }
   </script>
 </body>
